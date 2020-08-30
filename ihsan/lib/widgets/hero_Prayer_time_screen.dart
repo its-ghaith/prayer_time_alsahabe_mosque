@@ -1,6 +1,7 @@
+import 'package:Ihsan/screens/city_chose.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-
+import 'package:shared_preferences/shared_preferences.dart';
 import '../constant.dart';
 
 class HeroPrayerTimeScreen extends StatefulWidget {
@@ -9,9 +10,10 @@ class HeroPrayerTimeScreen extends StatefulWidget {
 }
 
 class _HeroPrayerTimeScreenState extends State<HeroPrayerTimeScreen> {
+
   @override
   Widget build(BuildContext context) {
-    return  ClipPath(
+    return ClipPath(
       clipper: MyClipper(),
       child: Container(
         padding: EdgeInsets.only(
@@ -19,10 +21,7 @@ class _HeroPrayerTimeScreenState extends State<HeroPrayerTimeScreen> {
           top: 40,
           right: 20,
         ),
-        height: MediaQuery
-            .of(context)
-            .size
-            .height * .45,
+        height: MediaQuery.of(context).size.height * .45,
         width: double.infinity,
         decoration: BoxDecoration(
           gradient: LinearGradient(
@@ -43,7 +42,18 @@ class _HeroPrayerTimeScreenState extends State<HeroPrayerTimeScreen> {
           children: [
             Align(
               alignment: Alignment.topRight,
-              child: SvgPicture.asset("assets/icons/menu.svg"),
+              child: GestureDetector(
+                child: SvgPicture.asset("assets/icons/menu.svg"),
+                onTap: () async  {
+                  SharedPreferences pre = await SharedPreferences.getInstance();
+                  pre.setBool("isCitySetted", false);
+                  Navigator.push(context, MaterialPageRoute(
+                    builder: (context) {
+                      return CityChose();
+                    },
+                  ));
+                },
+              ),
             ),
             SizedBox(
               height: 10,

@@ -23,9 +23,6 @@ class _PrayerTimeAfterState extends State<PrayerTimeAfter> {
   @override
   void initState() {
     super.initState();
-    PrayerDay.getNextPrayerTime();
-    futurePreferences = getPreferencesForNextPrayerTime();
-    timer = Timer.periodic(Duration(seconds: 1), (Timer t) => difference());
 
     final settingsAndroid = AndroidInitializationSettings('app_icon');
     final settingsIOS = IOSInitializationSettings(
@@ -35,6 +32,10 @@ class _PrayerTimeAfterState extends State<PrayerTimeAfter> {
     notifications.initialize(
         InitializationSettings(settingsAndroid, settingsIOS),
         onSelectNotification: onSelectNotification);
+
+    PrayerDay.getNextPrayerTime();
+    futurePreferences = getPreferencesForNextPrayerTime();
+    timer = Timer.periodic(Duration(seconds: 1), (Timer t) => difference());
   }
 
   Future onSelectNotification(String payload) {
@@ -64,7 +65,7 @@ class _PrayerTimeAfterState extends State<PrayerTimeAfter> {
     if (DateTime.now().compareTo(nextTime) == 1) {
       String prayerTime = preferences.getString("nextPrayerName");
       showOngoingNotification(notifications,
-          title: "صلاتك حياتك", body: "حان الآن موعد اذان $prayerTime");
+          title: "صلاتك حياتك", body: "حان الآن موعد آذان $prayerTime");
     }
 
     if (DateTime.now().isAfter(nextTime)) {
@@ -126,7 +127,7 @@ class _PrayerTimeAfterState extends State<PrayerTimeAfter> {
                       textDirection: TextDirection.rtl,
                     );
                   return Text(
-                    "صلاة null بعد:",
+                    "يرجى الأنتظار ...",
                     style: TextStyle(
                       fontSize: 30,
                       fontWeight: FontWeight.w600,
@@ -155,7 +156,7 @@ class _PrayerTimeAfterState extends State<PrayerTimeAfter> {
                     );
                   }
                   return Text(
-                    "null",
+                    "انتظر ...",
                     style: TextStyle(
                       fontSize: 50,
                       fontWeight: FontWeight.w600,

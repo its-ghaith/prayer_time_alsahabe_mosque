@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart' as intl;
 import 'package:Ihsan/constant.dart';
 import 'package:Ihsan/widgets/container_prayer_time.dart';
-import 'package:Ihsan/models/PrayerDay.dart';
 
 class ContainerPrayerDay extends StatefulWidget {
   @override
@@ -11,14 +10,11 @@ class ContainerPrayerDay extends StatefulWidget {
 }
 
 class _ContainerPrayerDayState extends State<ContainerPrayerDay> {
-
-  Future<PrayerDay> futurePrayerDay;
-
   @override
   initState() {
     super.initState();
-    futurePrayerDay = PrayerDay.getPrayerDay();
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -48,25 +44,11 @@ class _ContainerPrayerDayState extends State<ContainerPrayerDay> {
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              FutureBuilder<PrayerDay>(
-                future: futurePrayerDay,
-                builder: (context, snapshot) {
-                  if (snapshot.hasData){
-                    return Text(
-                      "${PrayerDay.getDayName(PrayerDay.todayPrayerDay)["ar"]} \n ${snapshot.data.date.replaceAll("-", ".")}",
-                      textAlign: TextAlign.center,
-                      textDirection: TextDirection.rtl,
-                      style: kTitleTextstyle,
-                    );
-                  }
-
-                  return Text(
-                    "",
-                    textAlign: TextAlign.center,
-                    textDirection: TextDirection.rtl,
-                    style: kTitleTextstyle,
-                  );
-                },
+              Text(
+                "${PrayerDay.getDayName(PrayerDay.todayPrayerDay)["ar"]} \n ${PrayerDay.todayPrayerDay.date}",
+                textAlign: TextAlign.center,
+                textDirection: TextDirection.rtl,
+                style: kTitleTextstyle,
               )
             ],
           ),
@@ -74,104 +56,35 @@ class _ContainerPrayerDayState extends State<ContainerPrayerDay> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              FutureBuilder<PrayerDay>(
-                future: futurePrayerDay,
-                builder: (context, snapshot) {
-                  if (snapshot.hasData)
-                    return ContainerPrayerTime(
-                      prayerIcon: "assets/images/asha.png",
-                      prayerName: "العشاء",
-                      time: intl.DateFormat.Hm().format(snapshot.data.ishaa),
-                    );
-
-                  return ContainerPrayerTime(
-                    prayerIcon: "assets/images/asha.png",
-                    prayerName: "العشاء",
-                    time: "",
-                  );
-                },
+              ContainerPrayerTime(
+                prayerIcon: "assets/images/asha.png",
+                prayerName: "العشاء",
+                time: intl.DateFormat.Hm().format(PrayerDay.todayPrayerDay.prayerTimes.isha),
               ),
-              FutureBuilder<PrayerDay>(
-                future: futurePrayerDay,
-                builder: (context, snapshot) {
-                  if (snapshot.hasData)
-                    return ContainerPrayerTime(
-                      prayerIcon: "assets/images/untergang.png",
-                      prayerName: "المغرب",
-                      time: intl.DateFormat.Hm().format(snapshot.data.maghrib),
-                    );
-                  return ContainerPrayerTime(
-                    prayerIcon: "assets/images/untergang.png",
-                    prayerName: "المغرب",
-                    time: "",
-                  );
-                },
+              ContainerPrayerTime(
+                prayerIcon: "assets/images/untergang.png",
+                prayerName: "المغرب",
+                time: intl.DateFormat.Hm().format(PrayerDay.todayPrayerDay.prayerTimes.maghrib),
               ),
-              FutureBuilder<PrayerDay>(
-                future: futurePrayerDay,
-                builder: (context, snapshot) {
-                  if (snapshot.hasData)
-                    return ContainerPrayerTime(
-                      prayerIcon: "assets/images/aser.png",
-                      prayerName: "العصر",
-                      time: intl.DateFormat.Hm().format(snapshot.data.assr),
-                    );
-                  return ContainerPrayerTime(
-                    prayerIcon: "assets/images/aser.png",
-                    prayerName: "العصر",
-                    time: "",
-                  );
-                },
+              ContainerPrayerTime(
+                prayerIcon: "assets/images/aser.png",
+                prayerName: "العصر",
+                time: intl.DateFormat.Hm().format(PrayerDay.todayPrayerDay.prayerTimes.asr),
               ),
-              FutureBuilder<PrayerDay>(
-                future: futurePrayerDay,
-                builder: (context, snapshot) {
-                  if (snapshot.hasData)
-                    return ContainerPrayerTime(
-                      prayerIcon: "assets/images/mittag.png",
-                      prayerName: "الظهر",
-                      time: intl.DateFormat.Hm().format(snapshot.data.duhr),
-                    );
-                  return ContainerPrayerTime(
-                    prayerIcon: "assets/images/mittag.png",
-                    prayerName: "الظهر",
-                    time: "",
-                  );
-                },
+              ContainerPrayerTime(
+                prayerIcon: "assets/images/mittag.png",
+                prayerName: "الظهر",
+                time: intl.DateFormat.Hm().format(PrayerDay.todayPrayerDay.prayerTimes.dhuhr),
               ),
-              FutureBuilder<PrayerDay>(
-                future: futurePrayerDay,
-                builder: (context, snapshot) {
-                  if (snapshot.hasData)
-                    return ContainerPrayerTime(
-                      prayerIcon: "assets/images/aufgang.png",
-                      prayerName: "الشروق",
-                      time: intl.DateFormat.Hm().format(snapshot.data.shuruk),
-                    );
-                  return ContainerPrayerTime(
-                    prayerIcon: "assets/images/aufgang.png",
-                    prayerName: "الشروق",
-                    time: "",
-                  );
-                },
+              ContainerPrayerTime(
+                prayerIcon: "assets/images/aufgang.png",
+                prayerName: "الضحى",
+                time: intl.DateFormat.Hm().format(PrayerDay.todayPrayerDay.prayerTimes.sunrise),
               ),
-              FutureBuilder<PrayerDay>(
-                future: futurePrayerDay,
-                builder: (context, snapshot) {
-                  if (snapshot.hasData)
-                    return ContainerPrayerTime(
-                      margin: false,
-                      prayerIcon: "assets/images/fajer.png",
-                      prayerName: "الفجر",
-                      time: intl.DateFormat.Hm().format(snapshot.data.fadjr),
-                    );
-                  return ContainerPrayerTime(
-                    margin: false,
-                    prayerIcon: "assets/images/fajer.png",
-                    prayerName: "الفجر",
-                    time: "",
-                  );
-                },
+              ContainerPrayerTime(
+                prayerIcon: "assets/images/fajer.png",
+                prayerName: "الفجر",
+                time: intl.DateFormat.Hm().format(PrayerDay.todayPrayerDay.prayerTimes.fajr),
               ),
             ],
           ),

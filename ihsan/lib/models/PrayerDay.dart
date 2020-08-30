@@ -1,62 +1,48 @@
 import 'dart:convert';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/services.dart';
+import 'package:Ihsan/models/City.dart';
+import 'package:adhan/adhan.dart';
 import 'package:intl/intl.dart' as intl;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class PrayerDay {
-  String _date;
-  DateTime _fadjr;
-  DateTime _shuruk;
-  DateTime _duhr;
-  DateTime _assr;
-  DateTime _maghrib;
-  DateTime _ishaa;
+  PrayerTimes _prayerTimes;
 
   static SharedPreferences preferences;
+
   static PrayerDay todayPrayerDay;
   static PrayerDay nextPrayerDay;
 
-  PrayerDay(this._date, this._fadjr, this._shuruk, this._duhr, this._assr,
-      this._maghrib, this._ishaa);
-
-  Map toJson() => {
-        'date': date,
-        'fadjr': fadjr,
-        'shuruk': shuruk,
-        'duhr': duhr,
-        'assr': assr,
-        'maghrib': maghrib,
-        'ishaa': ishaa,
-      };
-
-  PrayerDay.fromJson(Map json) {
-    _date = json['date'];
-    _fadjr = DateTime.parse(json['fadjr']['date']);
-    _shuruk = DateTime.parse(json['shuruk']['date']);
-    _duhr = DateTime.parse(json['duhr']['date']);
-    _assr = DateTime.parse(json['assr']['date']);
-    _maghrib = DateTime.parse(json['maghrib']['date']);
-    _ishaa = DateTime.parse(json['ishaa']['date']);
+  PrayerDay(City city, DateComponents dateComponents,
+      {CalculationMethod calculationMethod = CalculationMethod.umm_al_qura,
+        Madhab madhab = Madhab.shafi}) {
+    final myCoordinates = Coordinates(
+        city.lat,city.lng ); // Replace with your own location lat, lng.
+    final params = calculationMethod.getParameters();
+    params.madhab = madhab;
+    params.withMethodAdjustments(PrayerAdjustments(
+      sunrise: -1,
+      asr: 1,
+      maghrib: 2,
+      isha: 2
+    ));
+    params.fajrInterval=100;
+    final prayerTimes = PrayerTimes(myCoordinates, dateComponents, params);
+    _prayerTimes = prayerTimes;
   }
 
-  String get date => _date;
+  Map toJson() =>
+      {
+        "date": date,
+        "prayerTimes": jsonEncode(_prayerTimes)
+      };
 
-  DateTime get fadjr => _fadjr;
-
-  DateTime get shuruk => _shuruk;
-
-  DateTime get duhr => _duhr;
-
-  DateTime get assr => _assr;
-
-  DateTime get maghrib => _maghrib;
-
-  DateTime get ishaa => _ishaa;
 
   static Map<String, dynamic> getDayName(PrayerDay prayerDay) {
-    DateTime day = DateTime.parse(prayerDay.date);
-    String dayEn = intl.DateFormat('EEEE').format(day);
+    var year = prayerDay._prayerTimes.dateComponents.year;
+    var month = prayerDay._prayerTimes.dateComponents.month;
+    var day = prayerDay._prayerTimes.dateComponents.day;
+    DateTime dateTimeDay = DateTime(year, month, day);
+    String dayEn = intl.DateFormat('EEEE').format(dateTimeDay);
 
     String dayAr = "";
     String dayDe = "";
@@ -125,15 +111,14 @@ class PrayerDay {
     await setTodayPrayerDay();
     await setNextPrayerDay();
 
-
     var arr = [
-      todayPrayerDay.fadjr,
-      todayPrayerDay.shuruk,
-      todayPrayerDay.duhr,
-      todayPrayerDay.assr,
-      todayPrayerDay.maghrib,
-      todayPrayerDay.ishaa,
-      nextPrayerDay.fadjr
+      todayPrayerDay._prayerTimes.fajr,
+      todayPrayerDay._prayerTimes.sunrise,
+      todayPrayerDay._prayerTimes.dhuhr,
+      todayPrayerDay._prayerTimes.asr,
+      todayPrayerDay._prayerTimes.maghrib,
+      todayPrayerDay._prayerTimes.isha,
+      nextPrayerDay._prayerTimes.fajr
     ];
 
     final currentTime = DateTime.now();
@@ -171,18 +156,13 @@ class PrayerDay {
 
   static Future<PrayerDay> getPrayerDay({int countDay = 0}) async {
     final DateTime now = DateTime.now();
-    final intl.DateFormat formatter = intl.DateFormat('yyyy-MM-dd');
-    final String formatted =
-        formatter.format(now.add(Duration(days: countDay)));
-    var day = await rootBundle
-        .loadString(
-            'assets/cities/Utx5F8y5kF5cX81AtWEooLY3D3mJUfZ8gLQNgbBs.json')
-        .then((value) {
-      Map decoded = jsonDecode(value)["Dessau-Roßlau"];
-      PrayerDay prayerDay = PrayerDay.fromJson(decoded[formatted]);
-      return prayerDay;
-    });
-    return day;
+    final DateTime date = now.add(Duration(days: countDay));
+    final DateComponents dateComponents =
+    DateComponents(date.year, date.month, date.day);
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    City city = City.fromJson(jsonDecode(preferences.getString("city")));
+    PrayerDay prayerDay = PrayerDay(city, dateComponents);
+    return prayerDay;
   }
 
   static Future<PrayerDay> setTodayPrayerDay() async {
@@ -197,5 +177,13 @@ class PrayerDay {
     return day;
   }
 
+  PrayerTimes get prayerTimes => _prayerTimes;
 
+  set prayerTimes(PrayerTimes value) {
+    _prayerTimes = value;
+  }
+
+  String get date =>
+      "${this.prayerTimes.dateComponents.day}.${this.prayerTimes.dateComponents
+          .month}.${this.prayerTimes.dateComponents.year}";
 }

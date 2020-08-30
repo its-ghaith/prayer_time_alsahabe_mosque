@@ -10,6 +10,7 @@ NotificationDetails get _ongoing {
       autoCancel: true);
   final iOSChannelSpecifics = IOSNotificationDetails();
   return NotificationDetails(androidChannelSpecifics, iOSChannelSpecifics);
+
 }
 
 Future showOngoingNotification(FlutterLocalNotificationsPlugin notifications,
