@@ -3,6 +3,7 @@ import 'package:Ihsan/widgets/container_Prayer_Day.dart';
 import 'package:Ihsan/widgets/hero_Prayer_time_screen.dart';
 import 'package:Ihsan/widgets/prayer_time_after.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class PrayerTimeScreen extends StatefulWidget {
   @override
@@ -17,7 +18,7 @@ class _PrayerTimeScreenState extends State<PrayerTimeScreen> {
   @override
   initState() {
     super.initState();
-    prayer = Hallo();
+    prayer = CityDataProcessing();
   }
 
   @override
@@ -48,7 +49,7 @@ class _PrayerTimeScreenState extends State<PrayerTimeScreen> {
     );
   }
 
-  Future<bool> Hallo() async {
+  Future<bool> CityDataProcessing() async {
     await PrayerDay.getNextPrayerTime();
     return true;
   }

@@ -1,11 +1,12 @@
+import 'package:Ihsan/models/City.dart';
 import 'package:flutter/cupertino.dart';
 
 class RadioListTileCitiesProvider with ChangeNotifier{
-  String _selectedCity = "";
+  City _selectedCity;
 
-  String get selectedCity => _selectedCity;
+  City get selectedCity => _selectedCity;
 
-  set selectedCity(String value) {
+  set selectedCity(City value) {
     _selectedCity = value;
     notifyListeners();
   }

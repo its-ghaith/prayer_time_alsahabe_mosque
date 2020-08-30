@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:Ihsan/helper/fetchCities.dart';
 import 'package:Ihsan/providers/radioListTile_cities.dart';
 import 'package:Ihsan/screens/prayer_time_screen.dart';
@@ -31,7 +33,9 @@ class _CityChoseState extends State<CityChose> {
   }
 
   dynamic _onDone(context, RadioListTileCitiesProvider bloc) async {
-    if (bloc.selectedCity.isNotEmpty) {
+    if (bloc.selectedCity != null) {
+      SharedPreferences preferences = await SharedPreferences.getInstance();
+      preferences.setString("city", jsonEncode(bloc.selectedCity));
       setIsCitySetted();
       return Navigator.of(context).push(
         MaterialPageRoute(builder: (_) => PrayerTimeScreen()),
@@ -63,7 +67,7 @@ class _CityChoseState extends State<CityChose> {
                     builder: (context, snapshot) {
                       if (snapshot.hasData) {
                         return Column(
-                          children: getCitiesRow(snapshot.data, bloc, context),
+                          children: getSettingElements(snapshot.data),
                         );
                       }
                       return Center(
