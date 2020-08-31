@@ -1,0 +1,1 @@
+[2020-8-31 19:57:02] layer "120x120 web/apple-touch-icon-120x120-precomposed.png,152x152 web/apple-touch-icon-152x152-precomposed.png,167x167 web/apple-touch-icon-167x167-precomposed.png,180x180 web/ apple-touch-icon-180x180-precomposed.png": Filename begins with whitespace
