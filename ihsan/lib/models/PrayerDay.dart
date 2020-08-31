@@ -1,10 +1,7 @@
 import 'dart:convert';
 import 'package:Ihsan/models/City.dart';
-import 'package:Ihsan/providers/radioListTile_cities.dart';
 import 'package:adhan/adhan.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:intl/intl.dart' as intl;
-import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class PrayerDay {
@@ -29,73 +26,13 @@ class PrayerDay {
 
   Map toJson() => {"date": date, "prayerTimes": jsonEncode(_prayerTimes)};
 
-  static Map<String, dynamic> getDayName(PrayerDay prayerDay) {
+  static String getDayName(PrayerDay prayerDay) {
     var year = prayerDay._prayerTimes.dateComponents.year;
     var month = prayerDay._prayerTimes.dateComponents.month;
     var day = prayerDay._prayerTimes.dateComponents.day;
     DateTime dateTimeDay = DateTime(year, month, day);
     String dayEn = intl.DateFormat('EEEE').format(dateTimeDay);
-
-    String dayAr = "";
-    String dayDe = "";
-
-    switch (dayEn) {
-      case "Sunday":
-        {
-          dayAr = "الأحد";
-          dayDe = "Sonntag";
-        }
-        break;
-
-      case "Monday":
-        {
-          dayAr = "الإثنين";
-          dayDe = "Montag";
-        }
-        break;
-
-      case "Tuesday":
-        {
-          dayAr = "الثلاثاء";
-          dayDe = "Dienstag ";
-        }
-        break;
-
-      case "Wednesday":
-        {
-          dayAr = "الأربعاء";
-          dayDe = "Mittwoch";
-        }
-        break;
-
-      case "Thursday":
-        {
-          dayAr = "الخميس";
-          dayDe = "Donnerstag";
-        }
-        break;
-
-      case "Friday":
-        {
-          dayAr = "الجمعة";
-          dayDe = "Freitag";
-        }
-        break;
-
-      case "Saturday":
-        {
-          dayAr = "السبت";
-          dayDe = "Samstag";
-        }
-        break;
-    }
-
-    Map<String, dynamic> names = Map();
-    names["ar"] = dayAr;
-    names["en"] = dayEn;
-    names["de"] = dayDe;
-
-    return names;
+    return dayEn;
   }
 
   static getNextPrayerTime() async {
@@ -103,46 +40,16 @@ class PrayerDay {
     await setTodayPrayerDay();
     await setNextPrayerDay();
 
-    var arr = [
-      todayPrayerDay._prayerTimes.fajr,
-      todayPrayerDay._prayerTimes.sunrise,
-      todayPrayerDay._prayerTimes.dhuhr,
-      todayPrayerDay._prayerTimes.asr,
-      todayPrayerDay._prayerTimes.maghrib,
-      todayPrayerDay._prayerTimes.isha,
-      nextPrayerDay._prayerTimes.fajr
-    ];
+    Prayer prayer = todayPrayerDay.prayerTimes.nextPrayer();
+    DateTime dateTimePrayer = todayPrayerDay.prayerTimes.timeForPrayer(prayer);
 
-    final currentTime = DateTime.now();
-
-    if (currentTime.isBefore(arr[0])) {
-      preferences.setString("nextPrayerName", "الفجر");
-      preferences.setString("nextPrayerTime", arr[0].toIso8601String());
-      print("1");
-    } else if (currentTime.isAfter(arr[0]) && currentTime.isBefore(arr[1])) {
-      preferences.setString("nextPrayerName", "الضحى");
-      preferences.setString("nextPrayerTime", arr[1].toIso8601String());
-      print("2");
-    } else if (currentTime.isAfter(arr[1]) && currentTime.isBefore(arr[2])) {
-      preferences.setString("nextPrayerName", "الظهر");
-      preferences.setString("nextPrayerTime", arr[2].toIso8601String());
-      print("3");
-    } else if (currentTime.isAfter(arr[2]) && currentTime.isBefore(arr[3])) {
-      preferences.setString("nextPrayerName", "العصر");
-      preferences.setString("nextPrayerTime", arr[3].toIso8601String());
-      print("4");
-    } else if (currentTime.isAfter(arr[3]) && currentTime.isBefore(arr[4])) {
-      preferences.setString("nextPrayerName", "المغرب");
-      preferences.setString("nextPrayerTime", arr[4].toIso8601String());
-      print("5");
-    } else if (currentTime.isAfter(arr[4]) && currentTime.isBefore(arr[5])) {
-      preferences.setString("nextPrayerName", "العشاء");
-      preferences.setString("nextPrayerTime", arr[5].toIso8601String());
-      print("6");
-    } else if (currentTime.isAfter(arr[5])) {
-      preferences.setString("nextPrayerName", "الفجر");
-      preferences.setString("nextPrayerTime", arr[6].toIso8601String());
-      print("7");
+    if (prayer == Prayer.none) {
+      preferences.setString("nextPrayerName", Prayer.fajr.toString());
+      preferences.setString(
+          "nextPrayerTime", nextPrayerDay.prayerTimes.fajr.toIso8601String());
+    } else {
+      preferences.setString("nextPrayerName", prayer.toString());
+      preferences.setString("nextPrayerTime", dateTimePrayer.toIso8601String());
     }
   }
 

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:Ihsan/localization/localization_constants.dart';
 import 'package:Ihsan/models/PrayerDay.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -59,13 +60,15 @@ class _PrayerTimeAfterState extends State<PrayerTimeAfter> {
         n != 0 ? n.toString().padLeft(3, "0") : n.toString().padLeft(2, "0");
     String twoDigitMinutes = twoDigits(d.inMinutes.remainder(60));
     String twoDigitSeconds = twoDigits(d.inSeconds.remainder(60));
-    
 
-    
     if (DateTime.now().compareTo(nextTime) == 1) {
-      String prayerTime = preferences.getString("nextPrayerName");
+      BuildContext buildContext = _PrayerTimeAfterState().context;
+      String prayerTime =
+          getTrabskated(buildContext, preferences.getString("nextPrayerName"));
       showOngoingNotification(notifications,
-          title: "صلاتك حياتك", body: "حان الآن موعد آذان $prayerTime");
+          title: getTrabskated(buildContext, "Now is the time for Azan"),
+          body:
+              "${getTrabskated(buildContext, "Now is the time for Azan")} $prayerTime");
     }
 
     if (DateTime.now().isAfter(nextTime)) {
@@ -112,27 +115,24 @@ class _PrayerTimeAfterState extends State<PrayerTimeAfter> {
         children: [
           Row(
             crossAxisAlignment: CrossAxisAlignment.end,
-            mainAxisAlignment: MainAxisAlignment.end,
             children: [
               FutureBuilder<dynamic>(
                 future: futurePreferences,
                 builder: (context, snapshot) {
                   if (snapshot.hasData)
                     return Text(
-                      "صلاة ${snapshot.data.getString("nextPrayerName")} بعد:",
+                      "${getTrabskated(context, snapshot.data.getString("nextPrayerName"))} ${getTrabskated(context, "azan after")}:",
                       style: TextStyle(
                         fontSize: 30,
                         fontWeight: FontWeight.w600,
                       ),
-                      textDirection: TextDirection.rtl,
                     );
                   return Text(
-                    "يرجى الأنتظار ...",
+                    getTrabskated(context, "please wait ..."),
                     style: TextStyle(
                       fontSize: 30,
                       fontWeight: FontWeight.w600,
                     ),
-                    textDirection: TextDirection.rtl,
                   );
                 },
               ),
@@ -156,7 +156,7 @@ class _PrayerTimeAfterState extends State<PrayerTimeAfter> {
                     );
                   }
                   return Text(
-                    "انتظر ...",
+                    getTrabskated(context, "wait ..."),
                     style: TextStyle(
                       fontSize: 50,
                       fontWeight: FontWeight.w600,

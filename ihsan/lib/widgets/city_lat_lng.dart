@@ -1,3 +1,4 @@
+import 'package:Ihsan/localization/localization_constants.dart';
 import 'package:Ihsan/models/City.dart';
 import 'package:Ihsan/providers/radioListTile_cities.dart';
 import 'package:flutter/foundation.dart';
@@ -26,11 +27,12 @@ class _CityLatLngState extends State<CityLatLng> {
   Widget build(BuildContext context) {
     final bloc = Provider.of<RadioListTileCitiesProvider>(context);
     return SingleChildScrollView(
-      padding: const EdgeInsets.symmetric(vertical: 16),
+      padding: const EdgeInsets.symmetric(vertical: 0),
       child: Column(
         children: <Widget>[
+          Text(getTrabskated(context, "city")),
           const SizedBox(
-            height: 16,
+            height: 10,
           ),
           if (_show)
             SearchWidget<City>(
@@ -44,13 +46,13 @@ class _CityLatLngState extends State<CityLatLng> {
                     .toList();
               },
               popupListItemBuilder: (item) {
-                return PopupListItemWidget(item);
+                return PopupListCityWidget(item);
               },
               selectedItemBuilder: (selectedItem, deleteSelectedItem) {
-                return SelectedItemWidget(selectedItem, deleteSelectedItem);
+                return SelectedCityWidget(selectedItem, deleteSelectedItem);
               },
               // widget customization
-              noItemsFoundWidget: NoItemsFound(),
+              noItemsFoundWidget: NoCityFound(),
               textFieldBuilder: (controller, focusNode) {
                 return MyTextField(controller, focusNode);
               },
@@ -59,11 +61,10 @@ class _CityLatLngState extends State<CityLatLng> {
               },
             ),
           const SizedBox(
-            height: 32,
+            height: 15,
           ),
           Text(
-            "${bloc.selectedCity != null ? bloc.selectedCity.toJson().toString() : ""
-                "No item selected"}",
+            "${bloc.selectedCity != null ? bloc.selectedCity.toJson().toString() : getTrabskated(context, "A city is not selected")}",
           ),
         ],
       ),
@@ -71,10 +72,10 @@ class _CityLatLngState extends State<CityLatLng> {
   }
 }
 
-class SelectedItemWidget extends StatelessWidget {
-  const SelectedItemWidget(this.selectedItem, this.deleteSelectedItem);
+class SelectedCityWidget extends StatelessWidget {
+  const SelectedCityWidget(this.selectedCity, this.deleteSelectedItem);
 
-  final City selectedItem;
+  final City selectedCity;
   final VoidCallback deleteSelectedItem;
 
   @override
@@ -95,7 +96,7 @@ class SelectedItemWidget extends StatelessWidget {
                 bottom: 8,
               ),
               child: Text(
-                selectedItem.city,
+                selectedCity.city,
                 style: const TextStyle(fontSize: 14),
               ),
             ),
@@ -136,7 +137,7 @@ class MyTextField extends StatelessWidget {
           ),
           suffixIcon: Icon(Icons.search),
           border: InputBorder.none,
-          hintText: "Search here...",
+          hintText: getTrabskated(context, "Search here..."),
           contentPadding: const EdgeInsets.only(
             left: 16,
             right: 20,
@@ -149,7 +150,7 @@ class MyTextField extends StatelessWidget {
   }
 }
 
-class NoItemsFound extends StatelessWidget {
+class NoCityFound extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -162,7 +163,7 @@ class NoItemsFound extends StatelessWidget {
         ),
         const SizedBox(width: 10),
         Text(
-          "No Items Found",
+          getTrabskated(context, "The city has not found"),
           style: TextStyle(
             fontSize: 16,
             color: Colors.grey[900].withOpacity(0.7),
@@ -173,8 +174,8 @@ class NoItemsFound extends StatelessWidget {
   }
 }
 
-class PopupListItemWidget extends StatelessWidget {
-  const PopupListItemWidget(this.item);
+class PopupListCityWidget extends StatelessWidget {
+  const PopupListCityWidget(this.item);
 
   final City item;
 

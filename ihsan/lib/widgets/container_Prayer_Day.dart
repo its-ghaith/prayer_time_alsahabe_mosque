@@ -1,3 +1,4 @@
+import 'package:Ihsan/localization/localization_constants.dart';
 import 'package:Ihsan/models/PrayerDay.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart' as intl;
@@ -14,7 +15,6 @@ class _ContainerPrayerDayState extends State<ContainerPrayerDay> {
   initState() {
     super.initState();
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +45,7 @@ class _ContainerPrayerDayState extends State<ContainerPrayerDay> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
-                "${PrayerDay.getDayName(PrayerDay.todayPrayerDay)["ar"]} \n ${PrayerDay.todayPrayerDay.date}",
+                "${getTrabskated(context, PrayerDay.getDayName(PrayerDay.todayPrayerDay))} \n ${PrayerDay.todayPrayerDay.date}",
                 textAlign: TextAlign.center,
                 textDirection: TextDirection.rtl,
                 style: kTitleTextstyle,
@@ -57,34 +57,40 @@ class _ContainerPrayerDayState extends State<ContainerPrayerDay> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               ContainerPrayerTime(
-                prayerIcon: "assets/images/asha.png",
-                prayerName: "العشاء",
-                time: intl.DateFormat.Hm().format(PrayerDay.todayPrayerDay.prayerTimes.isha),
-              ),
-              ContainerPrayerTime(
-                prayerIcon: "assets/images/untergang.png",
-                prayerName: "المغرب",
-                time: intl.DateFormat.Hm().format(PrayerDay.todayPrayerDay.prayerTimes.maghrib),
-              ),
-              ContainerPrayerTime(
-                prayerIcon: "assets/images/aser.png",
-                prayerName: "العصر",
-                time: intl.DateFormat.Hm().format(PrayerDay.todayPrayerDay.prayerTimes.asr),
-              ),
-              ContainerPrayerTime(
-                prayerIcon: "assets/images/mittag.png",
-                prayerName: "الظهر",
-                time: intl.DateFormat.Hm().format(PrayerDay.todayPrayerDay.prayerTimes.dhuhr),
+                prayerIcon: "assets/images/fajer.png",
+                prayerName: getTrabskated(context, "Prayer.fajr"),
+                time: intl.DateFormat.Hm()
+                    .format(PrayerDay.todayPrayerDay.prayerTimes.fajr),
               ),
               ContainerPrayerTime(
                 prayerIcon: "assets/images/aufgang.png",
-                prayerName: "الضحى",
-                time: intl.DateFormat.Hm().format(PrayerDay.todayPrayerDay.prayerTimes.sunrise),
+                prayerName: getTrabskated(context, "Prayer.sunrise"),
+                time: intl.DateFormat.Hm()
+                    .format(PrayerDay.todayPrayerDay.prayerTimes.sunrise),
               ),
               ContainerPrayerTime(
-                prayerIcon: "assets/images/fajer.png",
-                prayerName: "الفجر",
-                time: intl.DateFormat.Hm().format(PrayerDay.todayPrayerDay.prayerTimes.fajr),
+                prayerIcon: "assets/images/mittag.png",
+                prayerName: getTrabskated(context, "Prayer.dhuhr"),
+                time: intl.DateFormat.Hm()
+                    .format(PrayerDay.todayPrayerDay.prayerTimes.dhuhr),
+              ),
+              ContainerPrayerTime(
+                prayerIcon: "assets/images/aser.png",
+                prayerName: getTrabskated(context, "Prayer.asr"),
+                time: intl.DateFormat.Hm()
+                    .format(PrayerDay.todayPrayerDay.prayerTimes.asr),
+              ),
+              ContainerPrayerTime(
+                prayerIcon: "assets/images/untergang.png",
+                prayerName: getTrabskated(context, "Prayer.maghrib"),
+                time: intl.DateFormat.Hm()
+                    .format(PrayerDay.todayPrayerDay.prayerTimes.maghrib),
+              ),
+              ContainerPrayerTime(
+                prayerIcon: "assets/images/asha.png",
+                prayerName: getTrabskated(context, "Prayer.isha"),
+                time: intl.DateFormat.Hm()
+                    .format(PrayerDay.todayPrayerDay.prayerTimes.isha),
               ),
             ],
           ),

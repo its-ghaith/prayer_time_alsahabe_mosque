@@ -1,4 +1,4 @@
-import 'package:Ihsan/screens/city_chose.dart';
+import 'package:Ihsan/screens/setting_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -49,7 +49,7 @@ class _HeroPrayerTimeScreenState extends State<HeroPrayerTimeScreen> {
                   pre.setBool("isCitySetted", false);
                   Navigator.push(context, MaterialPageRoute(
                     builder: (context) {
-                      return CityChose();
+                      return SettingScreen();
                     },
                   ));
                 },
