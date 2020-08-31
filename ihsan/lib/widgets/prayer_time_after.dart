@@ -54,7 +54,6 @@ class _PrayerTimeAfterState extends State<PrayerTimeAfter> {
     intl.DateFormat formatter = intl.DateFormat('HH:mm:ss');
     SharedPreferences preferences = await SharedPreferences.getInstance();
     DateTime nextTime = DateTime.parse(preferences.getString("nextPrayerTime"));
-
     var d = now.difference(nextTime);
     String twoDigits(int n) =>
         n != 0 ? n.toString().padLeft(3, "0") : n.toString().padLeft(2, "0");
@@ -62,13 +61,20 @@ class _PrayerTimeAfterState extends State<PrayerTimeAfter> {
     String twoDigitSeconds = twoDigits(d.inSeconds.remainder(60));
 
     if (DateTime.now().compareTo(nextTime) == 1) {
-      BuildContext buildContext = _PrayerTimeAfterState().context;
-      String prayerTime =
-          getTrabskated(buildContext, preferences.getString("nextPrayerName"));
-      showOngoingNotification(notifications,
-          title: getTrabskated(buildContext, "Now is the time for Azan"),
-          body:
-              "${getTrabskated(buildContext, "Now is the time for Azan")} $prayerTime");
+      String prayerTime = preferences.getString("nextPrayerName").replaceAll("Prayer.", "");
+
+      String languageCode = preferences.getString('language_code');
+      String title = "Your prayers are your life";
+      String body = "Now is the time for Azan";
+
+      if (languageCode == "ar") {
+        title = "صلاتك حياتك";
+        body = "حان الآن موعد آذان $prayerTime";
+      } else if (languageCode == "de") {
+        title = "Deine Gebete sind dein Leben";
+        body = "Jetzt ist die Zeit für Gebet $prayerTime";
+      }
+      showOngoingNotification(notifications, title: title, body: body);
     }
 
     if (DateTime.now().isAfter(nextTime)) {
